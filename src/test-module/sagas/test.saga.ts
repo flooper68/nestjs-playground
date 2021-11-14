@@ -1,26 +1,41 @@
+import { filter } from 'rxjs/operators';
 import { Injectable } from '@nestjs/common';
 import { map, Observable, tap } from 'rxjs';
 
-import { TestEvent } from '../events/test.event';
 import { ResolveSagaCommand } from '../commands/resolve-saga.command';
-import { ICommand, ofType, Saga } from '../../cqrs';
-import { IEvent } from './../../cqrs/interfaces/events/event.interface';
+import { ICommand, Saga } from '../../cqrs';
+import {
+  TestDomainEvent,
+  TestModuleEvents,
+} from '../events/test-module.events';
 
 @Injectable()
 export class TestSagas {
   @Saga()
-  testSaga = (events$: Observable<IEvent>): Observable<ICommand> => {
+  testSaga = (events$: Observable<TestDomainEvent>): Observable<ICommand> => {
     return events$.pipe(
-      ofType<TestEvent>('TestEvent'),
+      map((event) => {
+        if (event.type === TestModuleEvents['TestEntity/TestEvent']) {
+          return event;
+        }
+        return undefined;
+      }),
+      filter((event) => !!event),
       tap((event) => console.log('Running saga testSaga', event)),
       map((event) => new ResolveSagaCommand({ uuid: event.payload.uuid })),
     );
   };
 
   @Saga()
-  test2Saga = (events$: Observable<unknown>): Observable<ICommand> => {
+  test2Saga = (events$: Observable<TestDomainEvent>): Observable<ICommand> => {
     return events$.pipe(
-      ofType<TestEvent>('TestEvent'),
+      map((event) => {
+        if (event.type === TestModuleEvents['TestEntity/TestEvent']) {
+          return event;
+        }
+        return undefined;
+      }),
+      filter((event) => !!event),
       tap((event) => console.log('Running saga testSaga', event)),
       map((event) => new ResolveSagaCommand({ uuid: event.payload.uuid })),
     );

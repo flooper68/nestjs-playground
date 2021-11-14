@@ -4,7 +4,7 @@ import { TestCommandHandler } from './handlers/test-command.handler';
 import { TestEventHandler } from './handlers/test-event.handler';
 import { ResolveSageCommandHandler } from './handlers/resolve-saga.handler';
 import { TestSagas } from './sagas/test.saga';
-import { TestQueries } from './queries/test-query.handler';
+import { TestQueries } from './queries/test-queries';
 import { CqrsModule } from '../cqrs';
 import { TestCommands } from './commands/test-commands.commands';
 
